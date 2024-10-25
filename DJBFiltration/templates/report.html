@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {{sub_id | json_script:"sub_id"}}
+    {{ purest | json_script:"purest" }}
+    {{ impurest | json_script:"impurest" }}
+    {{runtime_per_status | json_script:"runtime_per_status"}}
+    {{changes_per_status | json_script:"changes_per_status"}}
+
+</head>
+<body>
+    <header class="navbar navbar-expand-lg navbar-dark shadow-sm">
+        <div class="collapse navbar-collapse" id="navbarNav"></div>
+        <div class="container-fluid">
+            <div class="form-check form-switch mx-4">
+                <input
+                    class="form-check-input p-3"
+                    type="checkbox"
+                    role="switch"
+                    id="flexSwitchCheckChecked"
+                    onclick="themetoggle()"
+                />
+            </div>
+            <a class="navbar-brand animate__animated animate__fadeInLeft" href="#">Site name / logo</a>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link animate__animated animate__pulse" href="/DJBFiltration/sub={{sub_id}}&per=12">Dashboard</a>
+                </li>
+                               
+                <li class="nav-item d-flex align-items-center">
+                    <img src="profile_icon.png" alt="Profile" class="rounded-circle me-2" width="40" height="40">
+                    <span>USER NAME</span>
+                    
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <main class="container my-5">
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4 animate__animated animate__fadeInLeft">
+                <div class="card h-100">    
+                    <div class="card-body">
+                        <h3 class="card-title"><span style="vertical-align: middle; text-align:center;">MAXIMUM RUNTIME</span> <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="30" height="20" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs"><g transform="matrix(1,0,0,1,0,0)"><path d="M24,18v2c0,1.65-1.35,3-3,3h-2c-1.65,0-3-1.35-3-3v-2c0-1.65,1.35-3,3-3h2c1.65,0,3,1.35,3,3ZM21,1h-4c-1.65,0-3,1.35-3,3v4c0,1.65,1.35,3,3,3h4c1.65,0,3-1.35,3-3V4c0-1.65-1.35-3-3-3Zm-12.03,.03c-1.36-1.36-3.59-1.37-4.92-.03L.97,3.91c-.6,.57-.63,1.52-.06,2.12,.57,.6,1.52,.63,2.12,.06l1.97-1.86V22.5c0,.83,.67,1.5,1.5,1.5s1.5-.67,1.5-1.5V4.23l1.97,1.86c.29,.27,.66,.41,1.03,.41,.4,0,.8-.16,1.09-.47,.57-.6,.54-1.55-.06-2.12l-3.06-2.88Z" fill="url(#SvgjsRadialGradient1036)" data-original-color="#000000ff" stroke="none"/></g><defs><radialGradient id="SvgjsRadialGradient1036"><stop stop-color="#00faffff" offset="0"/><stop stop-color="#0d45d6ff" offset="0.99"/></radialGradient></defs></svg></h3>                                 
+                        {% for max in maxrun %}
+                        <p class="card-text smallbox">{{ max.metergroupname }} --> {{max.status}}</p>
+                        <center><p class="card-text largebox">OPEN DATE & TIME<br>{{ max.opening_datetime }}</p></center>
+                        <center><p class="card-text largebox">CLOSE DATE & TIME<br> {{ max.closing_datetime }}</p></center>
+                        <center><p class="card-text largebox"></span> {{ max.duration }} minutes</p></center>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 animate__animated animate__fadeInRight">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title "> <span style="vertical-align: middle;"> </span>MINIMUM RUNTIME  </span><svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="30" height="20" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs"><g transform="matrix(1,0,0,1,0,0)"><path d="M14,7v-3c0-1.65,1.35-3,3-3h3c1.65,0,3,1.35,3,3v3c0,1.65-1.35,3-3,3h-3c-1.65,0-3-1.35-3-3Zm9.2,12.58l-2.69-4.39c-.4-.74-1.17-1.2-2.01-1.2s-1.61,.46-1.98,1.15l-2.74,4.48c-.39,.71-.37,1.56,.05,2.26s1.15,1.12,1.96,1.12h5.43c.81,0,1.55-.42,1.96-1.12s.43-1.54,.02-2.3Zm-13.23-1.67l-1.97,1.86V1.5c0-.83-.67-1.5-1.5-1.5s-1.5,.67-1.5,1.5V19.77l-1.97-1.86c-.6-.57-1.55-.54-2.12,.06-.57,.6-.54,1.55,.06,2.12l3.05,2.88c.66,.66,1.54,1.03,2.48,1.03s1.81-.36,2.44-1l3.09-2.91c.6-.57,.63-1.52,.06-2.12-.57-.6-1.52-.63-2.12-.06Z" fill="url(#SvgjsLinearGradient1001)" data-original-color="#000000ff" stroke="none"/></g><defs><linearGradient id="SvgjsLinearGradient1001"><stop stop-color="#00faffff" offset="0"/><stop stop-color="#0d45d6ff" offset="1"/></linearGradient></defs></svg></h3>
+                        {% for min in minrun %}
+                        <p class="card-text smallbox"></span>{{ min.metergroupname }} --> {{min.status}}</p>
+                        <center><p class="card-text largebox">OPEN DATE & TIME<br> {{ min.opening_datetime }}</p></center>
+                         <center><p class="card-text largebox">CLOSE DATE & TIME<br> {{ min.closing_datetime }}</p></center>
+                        <center><p class="card-text largebox"></span> {{ min.duration }} minutes</p></center>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div> 
+            <div class="col-md-6 col-lg-4 animate__animated animate__fadeIn">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title" style="margin-bottom: 15px;">PUREST & IMPUREST  <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="30" height="20">
+                            <defs>
+                              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color: #00FAFF" />
+                                <stop offset="100%" style="stop-color: #0D45D6" />
+                              </linearGradient>
+                            </defs>
+                            <path d="m9.5,2.5c0-1.381,1.119-2.5,2.5-2.5s2.5,1.119,2.5,2.5-1.119,2.5-2.5,2.5-2.5-1.119-2.5-2.5Zm9.5,19.5H5c-.553,0-1,.447-1,1s.447,1,1,1h14c.553,0,1-.447,1-1s-.447-1-1-1Zm-10-5c-.553,0-1,.447-1,1s.447,1,1,1h6c.553,0,1-.447,1-1s-.447-1-1-1h-6Zm8-4c0-.553-.447-1-1-1h-8c-.553,0-1,.447-1,1s.447,1,1,1h8c.553,0,1-.447,1-1Zm-11-5c0,.553.447,1,1,1h10c.553,0,1-.447,1-1s-.447-1-1-1H7c-.553,0-1,.447-1,1Zm-1.53-1.757l.354-1.418,1.418-.354c.445-.111.757-.511.757-.97s-.312-.859-.757-.97l-1.418-.354-.354-1.418c-.111-.445-.511-.757-.97-.757s-.859.312-.97.757l-.351,1.406-1.404.325C.328,2.591.008,2.985,0,3.444c-.008.459.297.865.74.984l1.432.385.357,1.43c.111.445.511.757.97.757s.859-.312.97-.757Zm19.058,10.061l-1.308-.523-.523-1.308c-.114-.285-.39-.472-.697-.472s-.583.187-.697.472l-.52,1.301-1.299.492c-.287.108-.479.381-.484.687-.005.307.176.586.459.705l1.318.556.526,1.316c.114.285.39.472.697.472s.583-.187.697-.472l.523-1.308,1.308-.523c.285-.114.472-.39.472-.697s-.187-.583-.472-.697Z"
+                                  style="fill: url(#gradient)" />
+                          </svg></h3>
+                        {% for pure in purest %}
+                        <center><p class="card-font">PUREST<?xml version="1.0" encoding="UTF-8"?>
+                            <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="22" height="22">
+                                <defs>
+                                  <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#00FAFF"/>
+                                    <stop offset="100%" style="stop-color:#0D45D6" />
+                                  </linearGradient>F
+                                </defs>
+                                <path d="M12,0A12.013,12.013,0,0,0,0,12c.6,15.9,23.4,15.893,24,0A12.013,12.013,0,0,0,12,0ZM8,7c1.768,0,3,2.108,3,4H9c0-1.054-.679-2-1-2s-1,.946-1,2H5C5,9.108,6.232,7,8,7Zm4.007,12C9,19,7.05,16,7,14H17C17,16,15,19,12.007,19ZM17,11c0-1.054-.679-2-1-2s-1,.946-1,2H13c.248-5.287,5.754-5.281,6,0Z" style="fill: url(#gradient)" />
+                              </svg></p></center><center><p  class="card-text smallerbox" >{{ pure.metergroupname }}                              
+                            </p></center>
+                        {% endfor %}
+                        {% for impure in impurest %}
+                        <center><p class="card-font">MOST IMPURE<?xml version="1.0" encoding="UTF-8"?>
+                            <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="22" height="22">
+                              <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                  <stop offset="0%" stop-color="#00FAFF" />
+                                  <stop offset="100%" stop-color="#0D45D6" />
+                                </linearGradient>
+                              </defs>
+                              <path d="M12,0A12.013,12.013,0,0,0,0,12c.6,15.9,23.4,15.893,24,0A12.013,12.013,0,0,0,12,0Zm4.375,6.219,1.25,1.562L16.1,9l1.524,1.219-1.25,1.562L12.9,9Zm-10,1.562,1.25-1.562L11.1,9,7.625,11.781l-1.25-1.562L7.9,9ZM11.993,17a21.841,21.841,0,0,0-6,1c.615-2.28,2.671-5,6.007-5s5.385,2.72,6,5A21.923,21.923,0,0,0,11.993,17Z" style="fill: url(#gradient)" />
+                            </svg></p></center></center><center><p  class="card-text smallerbox">{{ impure.metergroupname }}                                      
+                                    </p></center>
+                        {% endfor %}                    
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 animate__animated animate__fadeInRight">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title">TOTAL RUNTIME PER STATUS</h3><br>
+                        <canvas style="max-width:90%;max-height: 80%;"  id="runtimedoughnut"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 animate__animated animate__fadeInLeft">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title">STATUS CHANGES PER STATUS</h3><br>
+                        <canvas  style="max-width:90%;max-height: 80%;" id="changesPieChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 animate__animated animate__fadeInRight">
+                <div class="card h-100">
+                    <div class="card-body"> 
+                        <h3 class="card-title">GET TOTAL RUNTIME <?xml version="1.0" encoding="UTF-8"?>
+                            <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="30" height="20">
+                              <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                  <stop offset="0%" stop-color="#00FAFF" />
+                                  <stop offset="100%" stop-color="#0D45D6" />
+                                </linearGradient>
+                              </defs>
+                              <path d="M4.5,7A3.477,3.477,0,0,1,2.025,5.975L.5,4.62a1.5,1.5,0,0,1,2-2.24L4.084,3.794A.584.584,0,0,0,4.5,4a.5.5,0,0,0,.353-.146L8.466.414a1.5,1.5,0,0,1,2.068,2.172L6.948,6A3.449,3.449,0,0,1,4.5,7ZM24,3.5A1.5,1.5,0,0,0,22.5,2h-8a1.5,1.5,0,0,0,0,3h8A1.5,1.5,0,0,0,24,3.5ZM6.948,14l3.586-3.414A1.5,1.5,0,0,0,8.466,8.414l-3.613,3.44a.5.5,0,0,1-.707,0L2.561,10.268A1.5,1.5,0,0,0,.439,12.39l1.586,1.585A3.5,3.5,0,0,0,6.948,14ZM24,11.5A1.5,1.5,0,0,0,22.5,10h-8a1.5,1.5,0,0,0,0,3h8A1.5,1.5,0,0,0,24,11.5ZM6.948,22l3.586-3.414a1.5,1.5,0,0,0-2.068-2.172l-3.613,3.44A.5.5,0,0,1,4.5,20a.584.584,0,0,1-.416-.206L2.5,18.38a1.5,1.5,0,0,0-2,2.24l1.523,1.355A3.5,3.5,0,0,0,6.948,22ZM24,19.5A1.5,1.5,0,0,0,22.5,18h-8a1.5,1.5,0,0,0,0,3h8A1.5,1.5,0,0,0,24,19.5Z" style="fill: url(#gradient)" />
+                            </svg>
+                             </h3><br>
+                             <form class="form-box" 
+                              method="POST" id="runtime-form">
+                                {% csrf_token %}
+                                <center>
+                                    <div class="card-font">                                    
+                                        <label  for="metergroup" >Select the bed</label><br>
+                                    <select name="metergroup" id="metergroup">
+                                        {% for id, name in meter_map.items %}
+                                            <option  value="{{ id }}">{{ name }}</option>
+                                        {% endfor %}
+                                    </select></div>
+                                </center>
+                                <center>        <button id="get-stats-button" style="margin-top: 20px;" type="submit">GET STATS</button></center>
+                            </form>
+                            
+                            <div id="runtime-result" class="mt-3">
+                                <center><p style="margin-bottom:10px;margin-top: -100px;">
+                                    <span style="font-weight: 501;">Total Runtime:</span> 
+                                    <span id="total-runtime"></span>
+                                </p></center>
+                                <br>
+                                <center>
+                                    <div class="response_container">
+                                        <div class="formbox_answer"> <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24"  version="1.1"><g transform="matrix(1,0,0,1,0,0)"><path d="M6.692,14.038,1.01,17.391,0,15.662l3.942-2.295A6.428,6.428,0,0,1,3.584,12H-1V10H3.585a6.476,6.476,0,0,1,.369-1.371L0,6.326,1,4.6,4.961,6.9a6.614,6.614,0,0,1,.964-.958l-2.3-3.951L5.355.986l2.3,3.958A6.482,6.482,0,0,1,9,4.585V0h2V4.586a6.456,6.456,0,0,1,1.359.356l2.3-3.955,1.729,1L14.083,5.956a6.536,6.536,0,0,1,.959.952L19.012,4.6l1.006,1.729L16.043,8.64a6.5,6.5,0,0,1,.294.912,7.52,7.52,0,0,0-2.295-.532A4.512,4.512,0,0,0,10,6.5a4.5,4.5,0,0,0-3.5,7.32ZM23,19a5.006,5.006,0,0,1-5,5H9a4,4,0,0,1-.987-7.877,5.5,5.5,0,0,1,10.4-2.106A5.006,5.006,0,0,1,23,19Zm-2,0a3,3,0,0,0-3-3h-.963l-.235-.667A3.5,3.5,0,0,0,10,16.5c0,.133.008.264.021.394L10.141,18H9.027A2,2,0,1,0,9,22h9A3,3,0,0,0,21,19Z" fill="url(#SvgjsLinearGradient1017)" data-original-color="#000000ff" stroke="none"/></g><defs><linearGradient id="SvgjsLinearGradient1017"><stop stop-color="#e7c306ff" offset="0"/><stop stop-color="#ea0909ff" offset="1"/><stop stop-color="#ff0101ff" offset="0.86"/></linearGradient></defs> </svg>
+                                            <p id="status1"></p>
+                                        </div>
+                                        <div class="formbox_answer" >
+                                            <svg  xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24"  version="1.1"><g transform="matrix(1,0,0,1,0,0)"><path d="M12,17c-2.76,0-5-2.24-5-5s2.24-5,5-5,5,2.24,5,5-2.24,5-5,5Zm1-13V1c0-.55-.45-1-1-1s-1,.45-1,1v3c0,.55,.45,1,1,1s1-.45,1-1Zm0,19v-3c0-.55-.45-1-1-1s-1,.45-1,1v3c0,.55,.45,1,1,1s1-.45,1-1ZM5,12c0-.55-.45-1-1-1H1c-.55,0-1,.45-1,1s.45,1,1,1h3c.55,0,1-.45,1-1Zm19,0c0-.55-.45-1-1-1h-3c-.55,0-1,.45-1,1s.45,1,1,1h3c.55,0,1-.45,1-1ZM6.71,6.71c.39-.39,.39-1.02,0-1.41l-2-2c-.39-.39-1.02-.39-1.41,0s-.39,1.02,0,1.41l2,2c.2,.2,.45,.29,.71,.29s.51-.1,.71-.29Zm14,14c.39-.39,.39-1.02,0-1.41l-2-2c-.39-.39-1.02-.39-1.41,0s-.39,1.02,0,1.41l2,2c.2,.2,.45,.29,.71,.29s.51-.1,.71-.29Zm-16,0l2-2c.39-.39,.39-1.02,0-1.41s-1.02-.39-1.41,0l-2,2c-.39,.39-.39,1.02,0,1.41,.2,.2,.45,.29,.71,.29s.51-.1,.71-.29ZM18.71,6.71l2-2c.39-.39,.39-1.02,0-1.41s-1.02-.39-1.41,0l-2,2c-.39,.39-.39,1.02,0,1.41,.2,.2,.45,.29,.71,.29s.51-.1,.71-.29Z" fill="url(#SvgjsLinearGradient3724)" data-original-color="#000000ff" stroke="none"/></g><defs><linearGradient id="SvgjsLinearGradient3724"><stop stop-color="#ea0202ff" offset="0"/><stop stop-color="#e4f400ff" offset="1"/></linearGradient></defs></svg>
+                                            <p id="status2"></p>
+                                        </div>
+                                        </div>
+                                        <div  class="response_container">
+                                        <div class="formbox_answer" >
+                                            <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" ><defs><linearGradient id="SvgjsLinearGradient3724"><stop stop-color="#ea0202ff" offset="0"/<stop stop-color="#e4f400ff" offset="1"/></linearGradient></defs><path d="M3.355,17.391A9.94,9.94,0,0,1,14.764,1.252l1.778.988-1.869.8a8.521,8.521,0,0,0-4.282,4.4,7.978,7.978,0,0,0-2.371,1.3,9.8,9.8,0,0,1,4.018-6.467A7.827,7.827,0,0,0,9.958,2,7.954,7.954,0,0,0,4.326,15.574,6.455,6.455,0,0,0,3.355,17.391ZM24,18.5A5.507,5.507,0,0,0,18.653,13,6,6,0,0,0,7,15a5.173,5.173,0,0,0,.052.727A4.5,4.5,0,0,0,9.5,24h9A5.506,5.506,0,0,0,24,18.5Zm-7.077-4.253.177.93,1.044-.141A2.6,2.6,0,0,1,18.5,15a3.5,3.5,0,0,1,0,7h-9a2.5,2.5,0,0,1-.941-4.812l.812-.332-.223-.848A3.916,3.916,0,0,1,9,15a4,4,0,0,1,7.923-.753Z" fill="url(#SvgjsLinearGradient3724)" stroke="none"/></svg>
+                                            <p id="status3"></p>
+                                        </div>
+                                        <div class="formbox_answer" >
+                                            <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" ><defs><linearGradient id="SvgjsLinearGradient3724"><stop stop-color="#ea0202ff" offset="0"/><stop stop-color="#e4f400ff" offset="1"/></linearGradient></defs><path d="M12,24A12,12,0,1,1,16.058.71a2.931,2.931,0,0,1,.815,5.068c-5.106,3.917-5.089,8.54,0,12.444a2.931,2.931,0,0,1-.816,5.068A12.229,12.229,0,0,1,12,24ZM12,3a9,9,0,1,0,2.925,17.508c-6.511-5.065-6.49-11.968,0-17.016A9.322,9.322,0,0,0,12,3Zm4.863,9.145,1.55.442.442,1.55a1.191,1.191,0,0,0,2.29,0l.442-1.55,1.55-.442a1.191,1.191,0,0,0,0-2.29l-1.55-.442-.442-1.55a1.191,1.191,0,0,0-2.29,0l-.442,1.55-1.55.442A1.191,1.191,0,0,0,16.863,12.145ZM21,18.5a1.5,1.5,0,0,0,3,0A1.5,1.5,0,0,0,21,18.5Z"  fill="url(#SvgjsLinearGradient3724)" stroke="none"/></svg>
+                                            <p id="status4"></p>
+                                        </div>
+                                    </div>
+                                </center>
+                                        
+                            </div>                            
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    </body>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'DJBFiltration/js/script.js' %}"></script>
+<link id="theme-stylesheet" rel="stylesheet" href="{% static 'DJBFiltration/css/styles.css' %}"> 
+<input type="checkbox" id="flexSwitchCheckChecked" />
+<script>
+var themeStylesheetUrl1 = "{% static 'DJBFiltration/css/styles2.css' %}";
+var themeStylesheetUrl2 = "{% static 'DJBFiltration/css/styles.css' %}";
+</script>
+</html>
